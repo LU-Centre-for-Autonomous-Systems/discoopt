@@ -2,10 +2,10 @@
 Distributed Composite Optimization (DisCoOpt) is a Python package for solving composite optimization problems of the form
 
 $$
-\min_{x \in \mathbb{R}^d} \quad \frac{1}{n} \sum_{i=1}^n f_i(x) + g(x),
+\min_{x \in \mathbb{R}^d} \quad \frac{1}{n} \sum_{i=1}^n \big( f_i(x) + g_i(x) \big),
 $$
 
-where each $f_i: \mathbb{R}^d \rightarrow \mathbb{R}$ is a smooth loss function associated with a local dataset or agent, and $g(x)$ is a (possibly non-smooth) regularization term. DisCoOpt enables efficient and robust distributed optimization across multiple nodes, making it suitable for federated learning, multi-agent systems, and large-scale machine learning tasks.
+where each $f_i: \mathbb{R}^d \rightarrow \mathbb{R}$ is a smooth loss function associated with a local dataset or agent, and $g_i(x)$ is a (possibly non-smooth) regularization term. DisCoOpt enables efficient and robust distributed optimization across multiple nodes, making it suitable for federated learning, multi-agent systems, and large-scale machine learning tasks.
 
 This package contains the experimental code for the paper *A Unified Framework for Robust Distributed Optimization under Bounded Disturbances*.
 
@@ -13,7 +13,7 @@ This package contains the experimental code for the paper *A Unified Framework f
 
 - Support for distributed and parallel optimization
 - Modular and extensible architecture
-- Formula-style API based on NumPy and autograd (JAX), allowing you to define and deploy distributed optimization algorithms across multiple machines as naturally as writing mathematical expressions
+- Formula-style API based on NumPy and JAX, allowing you to define and deploy distributed optimization algorithms across multiple machines as naturally as writing mathematical expressions
 
 ## Installation
 Install via pip:
@@ -46,7 +46,7 @@ $$
 The distributed ridge regression problem can be efficiently addressed using the `EXTRA` (**EX**act firs**T**-orde**R** **A**lgorithm) [[1]](#references):
 
 $$
-\mathbf{x}^{k + 2} = (I + W) \mathbf{x}^{k + 1} - \frac{I + W}{2} \mathbf{x}^k - \gamma [\nabla f(\mathbf{x}^{k + 1}) - \nabla f(\mathbf{x}^{k})],
+\mathbf{x}^{k + 2} = (I + W) \mathbf{x}^{k + 1} - \frac{I + W}{2} \mathbf{x}^k - \gamma \big(\nabla f(\mathbf{x}^{k + 1}) - \nabla f(\mathbf{x}^{k})\big),
 $$
 
 where $W$ is a symmetric mixing matrix determined by the network topology.
