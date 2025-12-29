@@ -108,6 +108,11 @@ class Optimizer(metaclass=ABCMeta):
 class DGD(Optimizer):
     """
     Distributed Gradient Descent (DGD) algorithm.
+
+    The paper introducing the DGD algorithm is:
+    Nedic, A., & Ozdaglar, A. (2009).
+    "Distributed Subgradient Methods for Multi-Agent Optimization".
+    IEEE Transactions on Automatic Control, 54(1), 48-61.
     """
 
     def __init__(
@@ -143,6 +148,11 @@ class DGD(Optimizer):
 class EXTRA(Optimizer):
     """
     Exact First-Order Algorithm (EXTRA).
+
+    The paper introducing the EXTRA algorithm is:
+    Shi, W., Ling, Q., Wu, G., & Yin, W. (2015).
+    "EXTRA: An Exact First-Order Algorithm for Decentralized Consensus Optimization".
+    SIAM Journal on Optimization, 25(2), 944-966.
     """
 
     def __init__(
@@ -179,6 +189,11 @@ class EXTRA(Optimizer):
 class NIDS(Optimizer):
     """
     Network Independent Step-size (NIDS) algorithm.
+
+    The paper introducing the NIDS algorithm is:
+    Li, Z., Shi, W., & Yan, M. (2019).
+    "A decentralized proximal-gradient method with network independent step-sizes and separated convergence rates".
+    IEEE Transactions on Signal Processing, 67(17), 4494-4506.
     """
 
     def __init__(
@@ -214,6 +229,11 @@ class NIDS(Optimizer):
 class DIGing(Optimizer):
     """
     Distributed Inexact Gradient and a gradient tracking algorithm (DIGing).
+
+    The paper introducing the DIGing algorithm is:
+    Nedic, A., Olshevsky, A., & Shi, W. (2017).
+    "Achieving Geometric Convergence for Distributed Optimization over Time-Varying Graphs".
+    SIAM Journal on Optimization, 27(4), 2597-2633.
     """
 
     def __init__(
@@ -258,6 +278,11 @@ class AugDGM(Optimizer):
     To make the algorithm compliant with the Adaptive-Then-Combine (ATC) framework,
     where only the post-descent variable is required at each iteration,
     we reformulate AugDGM into an equivalent form that differs from the one presented in the original paper.
+
+    The paper introducing the AugDGM algorithm is:
+    Xu, J., Zhu, S., Soh, Y. C., & Xie, L. (2015).
+    "Augmented Distributed Gradient Methods for Multi-Agent Optimization under Uncoordinated Constant Stepsizes".
+    In Proceedings of the 54th IEEE Conference on Decision and Control (CDC) (pp. 2055-2060). IEEE.
     """
 
     def __init__(
@@ -296,6 +321,11 @@ class AugDGM(Optimizer):
 class RGT(Optimizer):
     """
     Robust Gradient Tracking (RGT) algorithm.
+
+    The paper introducing the RGT algorithm is:
+    Pu, S. (2020).
+    "A robust gradient tracking method for distributed optimization over directed networks".
+    In Proceedings of the 59th IEEE Conference on Decision and Control (CDC) (pp. 2335-2341). IEEE.
     """
 
     def __init__(
@@ -333,6 +363,11 @@ class RGT(Optimizer):
 class WE(Optimizer):
     """
     Wang-Elia (WE) algorithm.
+
+    The paper introducing the WE algorithm is:
+    Wang, J., & Elia, N. (2010).
+    "Control approach to distributed optimization".
+    In Proceedings of the 48th Annual Allerton Conference on Communication, Control, and Computing (Allerton) (pp. 557-561). IEEE.
     """
 
     def __init__(
@@ -370,6 +405,8 @@ class WE(Optimizer):
 class RAugDGM(Optimizer):
     """
     Robust Augmented Distributed Gradient Method (RAugDGM) algorithm.
+
+    This algorithm is proposed in this paper as a robustified version of AugDGM and a Adaptive-Then-Combine (ATC) variant of RGT.
     """
 
     def __init__(
@@ -410,6 +447,8 @@ class RAugDGM(Optimizer):
 class AtcWE(Optimizer):
     """
     Adaptive-Then-Combine Wang-Elia (AtcWE) algorithm.
+
+    This algorithm is proposed in this paper as a Adaptive-Then-Combine (ATC) version of WE.
     """
 
     def __init__(
