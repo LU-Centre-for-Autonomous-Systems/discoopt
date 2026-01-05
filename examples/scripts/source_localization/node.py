@@ -23,28 +23,33 @@ meas = meas_normal[np.newaxis, :] + np.random.normal(0, meas_var, (n_meas, n_sen
 # Regularization parameter
 rho = 0.0001
 
-# Obtain node name from command line arguments
-import sys
+# Obtain command line arguments
+import argparse
 
-if len(sys.argv) > 1:
-    node_id = "".join(sys.argv[1:])
-else:
-    print("Usage: python node.py <node_name>")
-    sys.exit(1)
+
+class Args(argparse.Namespace):
+    node_id: str
+    gamma: float
+    max_iter: int
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("node_id", type=str, help="Name of the node")
+parser.add_argument("--gamma", type=float, default=0.085, help="Step size")
+parser.add_argument("--max_iter", type=int, default=7000, help="Maximum iterations")
+args = parser.parse_args(namespace=Args())
 
 # Configure logging to display INFO level messages
-from logging import basicConfig, INFO
+import logging
 
-basicConfig(level=INFO)
+logging.basicConfig(level=logging.INFO)
 
 # Distributed optimization
 import jax.numpy as jnp
 from jax import Array
 
-gamma = 0.085
-max_iter = 7000
-meas_i = meas[:, int(node_id) - 1]
-sens_loc_i = sens_loc[:, int(node_id) - 1]
+meas_i = meas[:, int(args.node_id) - 1]
+sens_loc_i = sens_loc[:, int(args.node_id) - 1]
 
 
 def f(var: NDArray[np.float64]) -> Array:
@@ -56,15 +61,14 @@ def f(var: NDArray[np.float64]) -> Array:
 
 from topolink import NodeHandle
 
-nh = NodeHandle(name=node_id)
+nh = NodeHandle(args.node_id)
 
 from discoopt import RAugDGM
 
-optimizer = RAugDGM(f, nh, gamma)
-
+optimizer = RAugDGM(f, nh, args.gamma)
 theta_i = np.zeros(2)
 
 optimizer.init(theta_i)
-for k in range(max_iter):
+for k in range(args.max_iter):
     theta_i = optimizer.step(theta_i)
-    print(f"Node {node_id} iteration {k}: theta = {theta_i}")
+    print(f"Node {args.node_id} iteration {k}: theta = {theta_i}")

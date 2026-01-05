@@ -1,8 +1,9 @@
-from logging import basicConfig, INFO
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
 from numpy import array, eye
 from topolink import Graph
-
-basicConfig(level=INFO)
 
 L = array(
     [

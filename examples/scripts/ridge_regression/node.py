@@ -15,41 +15,45 @@ x_tilde = {i: np.multiply(0.1 * (int(i) - 1), np.ones(dim)) for i in node_names}
 epsilon = {i: np.random.normal(0, 5) for i in node_names}
 v = {i: u[i] @ x_tilde[i] + epsilon[i] for i in node_names}
 
-# Obtain node name from command line arguments
-import sys
+# Obtain command line arguments
+import argparse
 
-if len(sys.argv) > 1:
-    node_id = "".join(sys.argv[1:])
-else:
-    print("Usage: python node.py <node_name>")
-    sys.exit(1)
+
+class Args(argparse.Namespace):
+    node_id: str
+    gamma: float
+    max_iter: int
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("node_id", type=str, help="Name of the node")
+parser.add_argument("--gamma", type=float, default=0.31, help="Step size")
+parser.add_argument("--max_iter", type=int, default=2000, help="Maximum iterations")
+args = parser.parse_args(namespace=Args())
 
 # Configure logging to display INFO level messages
-from logging import basicConfig, INFO
+import logging
 
-basicConfig(level=INFO)
+logging.basicConfig(level=logging.INFO)
+
 
 # Distributed optimization
-gamma = 0.31
-max_iter = 2000
-
-
 def f(var: NDArray[np.float64]) -> NDArray[np.float64]:
-    return (u[node_id] @ var - v[node_id]) ** 2 + rho * var @ var
+    return (u[args.node_id] @ var - v[args.node_id]) ** 2 + rho * var @ var
 
 
 from topolink import NodeHandle
 
-nh = NodeHandle(name=node_id)
+nh = NodeHandle(args.node_id)
 
 from discoopt import AugDGM
 
-optimizer = AugDGM(f, nh, gamma)
+optimizer = AugDGM(f, nh, args.gamma)
 
 x_i = np.zeros(dim)
 
 optimizer.init(x_i)
 
-for k in range(max_iter):
+for k in range(args.max_iter):
     x_i = optimizer.step(x_i)
-    print(f"Node {node_id} iteration {k}: x = {x_i}")
+    print(f"Node {args.node_id} iteration {k}: x = {x_i}")
