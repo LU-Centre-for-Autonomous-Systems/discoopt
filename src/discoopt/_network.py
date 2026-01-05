@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Protocol, KeysView
 from numpy import float64
 from numpy.typing import NDArray
 
@@ -52,7 +52,7 @@ class NetworkOps(Protocol):
     def num_neighbors(self) -> int: ...
 
     @property
-    def neighbor_names(self) -> list[str]: ...
+    def neighbor_names(self) -> KeysView[str]: ...
 
     def send_each(self, state_by_neighbor: dict[str, NDArray[float64]]): ...
 
