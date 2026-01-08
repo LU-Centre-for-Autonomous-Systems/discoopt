@@ -128,7 +128,7 @@ from topolink import NodeHandle
 nh = NodeHandle(node_id)
 
 # Optimizer setup
-from discoopt.optimizer import EXTRA
+from discoopt import EXTRA
 
 optimizer = EXTRA(f_i, nh, step_size)
 
