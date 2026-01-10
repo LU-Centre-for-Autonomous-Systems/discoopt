@@ -1,4 +1,5 @@
 from typing import Callable
+
 from numpy import float64
 from numpy.typing import NDArray
 from jax import Array
