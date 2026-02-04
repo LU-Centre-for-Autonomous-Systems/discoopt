@@ -61,7 +61,7 @@ For more details, please refer to the [`topolink`](https://github.com/rui-huang-
 ```python
 import numpy as np
 from logging import basicConfig, INFO
-from topolink import Graph
+from topolink import Graph, bootstrap
 
 basicConfig(level=INFO)
 
@@ -70,7 +70,7 @@ W = np.eye(4) - L * 0.2
 
 graph = Graph.from_mixing_matrix(W)
 
-graph.deploy()
+bootstrap(graph)
 
 ```
 
