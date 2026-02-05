@@ -22,7 +22,7 @@ examples = [
     "cvxpy[ECOS]>=1.6.3",
     "matplotlib>=3.10.3",
     "networkx>=3.4.2",
-    "dask[distributed]>=2026.1.2",
+    "ray[default]>=2.53.0",
 ]
 autograd = ["autograd>=1.7.0"]
 notebook = ["ipykernel>=6.29.5"]
