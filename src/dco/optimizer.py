@@ -277,29 +277,28 @@ class DIGing(Optimizer):
         reg: Regularizer | None = None,
         use_jax: bool = True,
     ):
-        if reg is not None:
-            err_msg = "DIGing only supports loss functions without regularization."
-            logger.error(err_msg)
-            raise ValueError(err_msg)
-
         super().__init__(loss_fn, ops, gamma, reg, use_jax)
 
     def init(self, x_i: NDArray[float64]) -> None:
         self._aux_var["grad"] = self._grad_f(x_i)
-        self._aux_var["y_i"] = self._aux_var["grad"].copy()
+        self._aux_var["new_z_i"] = x_i - self._gamma * self._aux_var["grad"]
 
     def step(self, x_i: NDArray[float64]) -> NDArray[float64]:
-        w_x_i = self._ops.weighted_mix(x_i)
-
-        new_x_i = w_x_i - self._gamma * self._aux_var["y_i"]
+        new_x_i = self._prox_g(self._gamma, self._aux_var["new_z_i"])
         new_grad = self._grad_f(new_x_i)
+        p_i = new_x_i - x_i - self._aux_var["new_z_i"]
 
-        w_y_i = self._ops.weighted_mix(self._aux_var["y_i"])
+        w_p_i = self._ops.weighted_mix(p_i)
 
-        new_y_i = w_y_i + new_grad - self._aux_var["grad"]
+        q_i = w_p_i + self._aux_var["new_z_i"] * 2
+
+        w_q_i = self._ops.weighted_mix(q_i)
+
+        diff_grad = new_grad - self._aux_var["grad"]
+        new_new_z_i = w_q_i - self._gamma * diff_grad
 
         self._aux_var["grad"] = new_grad
-        self._aux_var["y_i"] = new_y_i
+        self._aux_var["new_z_i"] = new_new_z_i
 
         return new_x_i
 
@@ -339,8 +338,7 @@ class AugDGM(Optimizer):
         new_x_i = self._prox_g(self._gamma, new_z_i)
         new_s_i = new_x_i - self._gamma * self._grad_f(new_x_i)
 
-        diff_s_i = new_s_i - self._aux_var["s_i"]
-        p_i = diff_s_i - new_z_i
+        p_i = new_s_i - self._aux_var["s_i"] - new_z_i
 
         w_p_i = self._ops.weighted_mix(p_i)
 

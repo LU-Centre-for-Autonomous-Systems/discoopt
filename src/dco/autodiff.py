@@ -1,13 +1,14 @@
 from typing import Callable
 
-from numpy import float64
+import jax
+import numpy as np
 from numpy.typing import NDArray
-from jax import Array
 
 
 def nabla(
-    f: Callable[[NDArray[float64]], float | NDArray[float64] | Array], use_jax: bool
-) -> Callable[[NDArray[float64]], NDArray[float64]]:
+    f: Callable[[NDArray[np.float64]], float | NDArray[np.float64] | jax.Array],
+    use_jax: bool,
+) -> Callable[[NDArray[np.float64]], NDArray[np.float64]]:
     """
     Returns a gradient function for the given function f using either JAX or Autograd.
 
@@ -29,17 +30,16 @@ def nabla(
     """
 
     if not use_jax:
-        from autograd import grad
+        import autograd
 
-        return grad(f)  # type: ignore
+        return autograd.grad(f)  # type: ignore
 
-    from jax import grad, jit, config, device_get
+    jax.config.update("jax_platforms", "cpu")
 
-    config.update("jax_platforms", "cpu")
+    raw_grad = jax.jit(jax.grad(f))
 
-    raw_grad = jit(grad(f))
-
-    def wrapped_grad(x: NDArray[float64]) -> NDArray[float64]:
-        return device_get(raw_grad(x))
+    def wrapped_grad(x: NDArray[np.float64]) -> NDArray[np.float64]:
+        grad_val = jax.device_get(raw_grad(x))
+        return np.asarray(grad_val).astype(np.float64, copy=False)
 
     return wrapped_grad
